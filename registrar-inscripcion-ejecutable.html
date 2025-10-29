@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Plantilla de Formulario - Prototipo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Pequeños estilos adicionales (sin romper Tailwind) */
+    .is-invalid { border-color: #dc2626 !important; box-shadow: 0 0 0 3px rgba(220,38,38,0.08); }
+    .required-asterisk::after { content: ' *'; color: #dc2626; }
+    /* Mensajes */
+    .msg-success { color: #065f46; }
+    .msg-error { color: #991b1b; }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-100 flex items-start justify-center py-12">
+  <main class="w-full max-w-2xl bg-white rounded-2xl shadow-md p-6 mx-4">
+    <h1 class="text-2xl font-bold text-center mb-4">Registrar Inscripcion</h1>
+
+    <!-- Instrucciones: reemplaza los placeholders y opciones según tu caso -->
+    <form id="buscarUsuario" class="space-y-4" novalidate>
+
+      <div class="grid grid-cols-1 gap-4">
+        <div>
+          <label for="DNI" class="block font-medium required-asterisk">DNI</label>
+          <div class="mt-1 relative">
+            <input id="DNI" name="DNI" type="text" required placeholder="Ej: 12345678"
+              class="block w-full border rounded p-2 pr-12" aria-describedby="dniHelp" />
+            <!-- Botón de búsqueda con icono dentro del input -->
+            <button id="buscarBtn" type="submit" title="Buscar" aria-label="Buscar" 
+              class="absolute right-1 top-1/2 -translate-y-1/2 bg-blue-600 text-white p-2 rounded hover:bg-blue-700 flex items-center justify-center">
+              <!-- Icono de lupa corregido para asegurar visibilidad -->
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="6" stroke-linecap="round" stroke-linejoin="round"></circle>
+                <path d="M21 21l-4.35-4.35" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </button>
+          </div>
+          <p id="dniHelp" class="mt-1 text-sm text-gray-500">Ingresa el DNI y presiona Buscar. <button id="dniExample" type="button" class="underline text-blue-600">Usar DNI de ejemplo</button></p>
+        </div>
+
+        <div class="flex gap-4 justify-end">
+          <div>
+            <button id="registrarNuevo" type="button" class="flex-1 bg-green-600 text-white p-2 rounded hover:bg-green-700">Registrar nuevo</button>
+          </div>
+        </div>
+      </div>
+    </form>
+
+
+
+    <!-- Datos del usuario si encuentra a un usuario logueado -->
+  <!-- Datos del usuario: oculto hasta que se encuentre el DNI -->
+  <form id="Maraton" class="space-y-4 hidden" novalidate>
+
+        <!-- En este campo deberia mostrar el nombre completo si encuentra un usuario logueado -->
+        <div>
+          <label for="nombre" class="block font-medium">Nombre completo</label>
+          <input id="nombre" name="nombre" type="text" value="" disabled 
+            class="mt-1 block w-full border rounded p-2 bg-gray-300" />
+        </div>
+
+        <!-- Al seleccionar mostrar si tiene o no tiene cupo en esa categoria -->
+        <div>
+            <label for="categoria" class="block font-medium required-asterisk">Categoria</label>
+            <select id="categoria" name="categoria" required class="mt-1 block w-full border rounded p-2">
+            <option value="" disabled selected>-- Seleccionar --</option>
+            <option value="efectivo">Masculino</option>
+            <option value="tarjeta">Femenino</option>
+            </select>
+            <p class="mt-1 text-sm text-gray-500">Elige la categoria deseada. Puedes editar las opciones.</p>
+        </div>
+
+        <!-- Al seleccionar mostrar si tiene o no tiene cupo en esa distancia -->
+        <div>
+            <label for="distancia" class="block font-medium required-asterisk">Distancia</label>
+            <select id="distancia" name="distancia" required class="mt-1 block w-full border rounded p-2">
+            <option value="" disabled selected>-- Seleccionar --</option>
+            <option value="5k">5K</option>
+            <option value="10k">10K</option>
+            <option value="21k">21K</option>
+            <option value="42k">42K</option>
+            </select>
+            <p class="mt-1 text-sm text-gray-500">Elige la distancia a correr. Puedes editar las opciones.</p>
+        </div>
+
+        <div>
+            <label for="organizacion" class="block font-medium required-asterisk">Organizacion Destinataria</label>
+            <select id="organizacion" name="organizacion" required class="mt-1 block w-full border rounded p-2">
+            <option value="" disabled selected>-- Seleccionar --</option>
+            <option value="caritas">Caritas</option>
+            <option value="cruz_roja">Cruz Roja</option>
+            <option value="conin">Conin</option>
+            </select>
+            <p class="mt-1 text-sm text-gray-500">Elige la organizacion destinataria a representar. Puedes editar las opciones.</p>
+        </div>
+
+    <div class="flex gap-4 justify-end">
+      <div>
+        <button id="cancelarRegistro" type="button" class="flex-1 bg-red-600 text-white p-2 rounded hover:bg-red-700">Cancelar</button>
+      </div>
+      <div>
+        <button id="continuarPago" type="button" class="flex-1 bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Continuar al pago</button>
+      </div>
+      <div>
+        <button id="registrarInscripcion" type="button" disabled class="flex-1 bg-gray-100 text-gray-400 p-2 rounded cursor-not-allowed">Registrar Inscripcion</button>
+      </div>
+    </div>
+    <div class="flex gap-4 justify-end">
+      <div class="text-sm text-gray-600">Estado pago: <span id="estadoPago">No registrado</span></div>
+      <div>
+      <!-- Botón sólo para demo: simular que el pago fue registrado -->
+      <button id="simularPago" type="button" class="bg-yellow-500 text-white p-2 rounded hover:bg-yellow-600">Simular pago completado</button>
+      </div>
+    </div>
+    </form>
+    
+  <script>
+    (function(){
+      // Datos de ejemplo
+      const exampleDni = '12345678';
+      const exampleUser = { dni: exampleDni, nombre: 'Francisco Andrade' };
+
+      // Elementos
+      const buscarForm = document.getElementById('buscarUsuario');
+      const dniInput = document.getElementById('DNI');
+      const dniExampleBtn = document.getElementById('dniExample');
+  const maratonForm = document.getElementById('Maraton');
+      const nombreInput = document.getElementById('nombre');
+  const registrarNuevoBtn = document.getElementById('registrarNuevo');
+      const continuarPagoBtn = document.getElementById('continuarPago');
+      const registrarInscripcionBtn = document.getElementById('registrarInscripcion');
+      const simularPagoBtn = document.getElementById('simularPago');
+      const cancelarRegistroBtn = document.getElementById('cancelarRegistro');
+      const estadoPagoSpan = document.getElementById('estadoPago');
+
+      let currentDni = null;
+
+      function setSearchStatus(text, type='info'){
+        // crear/usar un elemento de status dentro del form
+        let status = document.getElementById('searchStatus');
+        if(!status){
+          status = document.createElement('div');
+          status.id = 'searchStatus';
+          status.setAttribute('aria-live', 'polite');
+          status.className = 'mt-2 text-sm';
+          const dniHelp = document.getElementById('dniHelp');
+          dniHelp.parentNode.appendChild(status);
+        }
+        status.textContent = text;
+        status.classList.remove('text-green-600','text-red-600','text-gray-600');
+        if(type === 'ok') status.classList.add('text-green-600');
+        else if(type === 'error') status.classList.add('text-red-600');
+        else status.classList.add('text-gray-600');
+      }
+
+      function checkPaymentStatus(dni){
+        const key = `payment_completed_${dni}`;
+        return localStorage.getItem(key) === 'true';
+      }
+
+      function updatePaymentUI(dni){
+        if(!dni) return;
+        const paid = checkPaymentStatus(dni);
+        if(paid){
+          estadoPagoSpan.textContent = 'Registrado';
+          registrarInscripcionBtn.disabled = false;
+          registrarInscripcionBtn.classList.remove('bg-gray-100','text-gray-400','cursor-not-allowed');
+          registrarInscripcionBtn.classList.add('bg-green-600','text-white','hover:bg-green-700');
+        } else {
+          estadoPagoSpan.textContent = 'No registrado';
+          registrarInscripcionBtn.disabled = true;
+          registrarInscripcionBtn.classList.remove('bg-green-600','text-white','hover:bg-green-700');
+          registrarInscripcionBtn.classList.add('bg-gray-100','text-gray-400','cursor-not-allowed');
+        }
+      }
+
+      // Buscar usuario (simulado)
+      buscarForm.addEventListener('submit', function(e){
+        e.preventDefault();
+        const dni = (dniInput.value || '').trim();
+        if(!dni){
+          setSearchStatus('Por favor ingresa un DNI.', 'error');
+          return;
+        }
+        if(dni === exampleUser.dni){
+          // mostrar formulario inferior con datos
+          currentDni = dni;
+          nombreInput.value = exampleUser.nombre;
+          maratonForm.classList.remove('hidden');
+          // ocultar el botón de "Registrar nuevo" al encontrar usuario
+          if(registrarNuevoBtn) registrarNuevoBtn.classList.add('hidden');
+          // scroll hacia el formulario
+          maratonForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          setSearchStatus(`Usuario encontrado: ${exampleUser.nombre}`, 'ok');
+          updatePaymentUI(dni);
+        } else {
+          // no encontrado
+          currentDni = null;
+          maratonForm.classList.add('hidden');
+          // mostrar el botón de "Registrar nuevo" si no se encuentra
+          if(registrarNuevoBtn) registrarNuevoBtn.classList.remove('hidden');
+          setSearchStatus('No se encontró un usuario con ese DNI.', 'error');
+        }
+      });
+
+      // Autocompletar DNI de ejemplo
+      dniExampleBtn.addEventListener('click', function(){
+        dniInput.value = exampleDni;
+        setSearchStatus('DNI de ejemplo cargado. Presiona Buscar.', 'info');
+        dniInput.focus();
+      });
+
+      // Continuar al pago: navegar al html de cobro con query param
+      continuarPagoBtn.addEventListener('click', function(){
+        const dni = currentDni || dniInput.value.trim();
+        if(!dni){
+          setSearchStatus('Primero busca y selecciona un usuario.', 'error');
+          return;
+        }
+        // Navega a registrar-cobro-ejecutable.html pasando el dni como parámetro
+        window.location.href = 'registrar-cobro-ejecutable.html?dni=' + encodeURIComponent(dni);
+      });
+
+      // Simular pago completado: marca en localStorage para habilitar el registro
+      simularPagoBtn.addEventListener('click', function(){
+        const dni = currentDni || dniInput.value.trim();
+        if(!dni){
+          setSearchStatus('Busca un usuario primero para simular el pago.', 'error');
+          return;
+        }
+        localStorage.setItem(`payment_completed_${dni}`, 'true');
+        setSearchStatus('Pago simulado y registrado.', 'ok');
+        updatePaymentUI(dni);
+      });
+
+      // Registrar inscripcion: acción de demo
+      registrarInscripcionBtn.addEventListener('click', function(){
+        const dni = currentDni || dniInput.value.trim();
+        if(!dni) return;
+        if(!checkPaymentStatus(dni)){
+          setSearchStatus('No se puede registrar: el pago no fue registrado.', 'error');
+          return;
+        }
+        // Aquí pondrías la lógica real de envío al servidor. En la plantilla mostramos confirmación.
+        setSearchStatus('Inscripción registrada correctamente (demo).', 'ok');
+        // opcional: deshabilitar botón para evitar reenvíos
+        registrarInscripcionBtn.disabled = true;
+        registrarInscripcionBtn.classList.remove('bg-green-600');
+        registrarInscripcionBtn.classList.add('bg-gray-100','text-gray-400','cursor-not-allowed');
+      });
+
+      // Cancelar: oculta el formulario inferior y limpia estado
+      cancelarRegistroBtn.addEventListener('click', function(){
+        maratonForm.classList.add('hidden');
+        currentDni = null;
+        dniInput.value = '';
+        nombreInput.value = '';
+        // mostrar nuevamente el botón de registrar nuevo
+        if(registrarNuevoBtn) registrarNuevoBtn.classList.remove('hidden');
+        setSearchStatus('Operación cancelada.', 'info');
+      });
+
+      // Si la página se carga con ?dni=xxx y el pago ya está registrado, auto-mostrar
+      document.addEventListener('DOMContentLoaded', function(){
+        const params = new URLSearchParams(window.location.search);
+        const dni = params.get('dni');
+        if(dni){
+          dniInput.value = dni;
+          // disparar búsqueda simulada
+          const evt = new Event('submit', { bubbles: true, cancelable: true });
+          buscarForm.dispatchEvent(evt);
+        }
+      });
+    })();
+  </script>
+
+</body>
+</html>

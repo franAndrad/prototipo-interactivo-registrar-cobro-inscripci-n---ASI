@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Registrar Cobro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Pequeños estilos adicionales (sin romper Tailwind) */
+    .is-invalid { border-color: #dc2626 !important; box-shadow: 0 0 0 3px rgba(220,38,38,0.08); }
+    .required-asterisk::after { content: ' *'; color: #dc2626; }
+    /* Mensajes */
+    .msg-success { color: #065f46; }
+    .msg-error { color: #991b1b; }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-100 flex items-start justify-center py-12">
+  <main class="w-full max-w-2xl bg-white rounded-2xl shadow-md p-6 mx-4">
+    <h1 class="text-2xl font-bold text-center mb-4">Registrar Cobro</h1>
+
+    <!-- Instrucciones: reemplaza los placeholders y opciones según tu caso -->
+    <form id="cobro" class="space-y-4" novalidate>
+      <!-- Mensajes dinámicos -->
+      <div id="form-messages" role="status" aria-live="polite" class="sr-only"></div>
+        
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label for="montoBase" class="block font-medium">Monto Base (ARS)</label>
+          <input id="montoBase" name="montoBase" type="text" value="$ 30.000,00" disabled
+            class="mt-1 block w-full border rounded p-2 bg-gray-200" />
+        </div>
+        <div>
+          <label for="descuento" class="block font-medium">Descuento</label>
+          <input id="descuento" name="descuento" type="text" value="10%" disabled
+            class="mt-1 block w-full border rounded p-2 bg-gray-200" />
+        </div>
+      </div>
+
+      <div>
+        <label for="montoTotal" class="block font-medium">Monto Total (ARS)</label>
+        <input id="montoTotal" name="montoTotal" type="text" value="$0.00" disabled
+          class="mt-1 block w-full border rounded p-2 bg-gray-200" />
+      </div>
+
+        <div>
+        <label for="nombre" class="block font-medium required-asterisk">Nombre Titular</label>
+        <input id="nombre" name="nombre" type="text" required placeholder="Ej: Juan Pérez"
+            class="mt-1 block w-full border rounded p-2" />
+        </div>
+
+        <div>
+        <label for="numeroTarjeta" class="block font-medium required-asterisk">Numero Tarjeta</label>
+        <input id="numeroTarjeta" name="numeroTarjeta" type="text" required placeholder="Ej: 1234 5678 9012 3456"
+            class="mt-1 block w-full border rounded p-2" />
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label for="cvc" class="block font-medium required-asterisk">CVC</label>
+                <input id="cvc" name="cvc" type="text" required placeholder="Ej: 123"
+                    class="mt-1 block w-full border rounded p-2" />
+            </div>
+
+            <div>
+                <label for="fecha" class="block font-medium required-asterisk">Fecha Vencimiento</label>
+                <input id="fecha" name="fecha" type="date" required class="mt-1 block w-full border rounded p-2" />
+            </div>
+        </div>
+        
+
+      <!-- Botones: submit, reset, action button y ejemplo disabled -->
+     <div class="flex gap-4 justify-end">
+
+        <div class="flex flex-col sm:flex-row gap-3 mt-2">
+          <button id="cancelBtn" type="button" class="flex-1 bg-red-600 text-white p-2 rounded hover:bg-red-700">Cancelar</button>
+        </div>
+  
+        <div class="flex flex-col sm:flex-row gap-3 mt-2">
+          <button id="submitCobro" type="submit" class="flex-1 bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Registrar Cobro</button>
+        </div>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    (function(){
+      const form = document.getElementById('cobro');
+      const messages = document.getElementById('form-messages');
+      const cancelBtn = document.getElementById('cancelBtn');
+
+      function showMessage(text, type='success'){
+        messages.className = type === 'success' ? 'msg-success' : 'msg-error';
+        messages.textContent = text;
+        messages.classList.remove('sr-only');
+      }
+
+      function clearMessage(){
+        messages.textContent = '';
+        messages.className = '';
+        messages.classList.add('sr-only');
+      }
+
+      // Obtener dni desde query param
+      const params = new URLSearchParams(window.location.search);
+      const dni = params.get('dni') || '';
+
+      // Si hay dni, mostrarlo en la consola (puede mostrarse en UI si se desea)
+      if(dni){
+        console.log('Registrar cobro para DNI:', dni);
+      }
+
+      // Cálculo de montos: parsear monto base y descuento y actualizar montoTotal
+      function parseCurrencyToNumber(str){
+        if(!str) return 0;
+        // eliminar todo excepto números, punto y coma
+        const cleaned = str.replace(/[^0-9.,-]/g, '').replace(/\./g, '').replace(/,/g, '.');
+        const n = parseFloat(cleaned);
+        return isNaN(n) ? 0 : n;
+      }
+
+      function parsePercent(str){
+        if(!str) return 0;
+        const m = str.toString().match(/([0-9]+(?:[.,][0-9]+)?)/);
+        if(!m) return 0;
+        return parseFloat(m[1].replace(',', '.'));
+      }
+
+      function formatCurrency(n){
+        try{
+          return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(n);
+        }catch(e){
+          return '$' + n.toFixed(2);
+        }
+      }
+
+      function computeAmounts(){
+        const baseStr = document.getElementById('montoBase').value;
+        const descStr = document.getElementById('descuento').value;
+        const base = parseCurrencyToNumber(baseStr);
+        const pct = parsePercent(descStr);
+        const total = base * (1 - (pct/100));
+        document.getElementById('montoTotal').value = formatCurrency(total);
+      }
+
+      // Calcular al cargar la página
+      computeAmounts();
+
+      // Cancelar vuelve atrás
+      cancelBtn.addEventListener('click', function(){
+        window.history.back();
+      });
+
+      // Submit: validar campos mínimos y simular registro de cobro
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        clearMessage();
+
+        // Validación simple
+        const nombre = document.getElementById('nombre').value.trim();
+        const numeroTarjeta = document.getElementById('numeroTarjeta').value.trim();
+        const cvc = document.getElementById('cvc').value.trim();
+        const fecha = document.getElementById('fecha').value;
+
+        if(!nombre || !numeroTarjeta || !cvc || !fecha){
+          showMessage('Por favor completa todos los campos requeridos.', 'error');
+          return;
+        }
+
+        // Aquí iría la integración real con pasarela de pago.
+        // En este prototipo simulamos que el cobro fue exitoso.
+        if(!dni){
+          showMessage('Advertencia: no se proporcionó DNI. Se registrará el cobro sin asociarlo a un DNI.', 'error');
+          // no abortamos; igual marcamos pago
+        }
+
+        // Guardar flag de pago en localStorage para el DNI (si existe)
+        if(dni){
+          localStorage.setItem(`payment_completed_${dni}`, 'true');
+        }
+
+        showMessage('Cobro registrado correctamente. Redirigiendo a inscripción...', 'success');
+
+        // Redirigir después de un breve delay para que el usuario vea el mensaje
+        setTimeout(function(){
+          const target = 'registrar-inscripcion-ejecutable.html' + (dni ? ('?dni=' + encodeURIComponent(dni)) : '');
+          window.location.href = target;
+        }, 900);
+      });
+    })();
+  </script>
+
+</body>
+</html>
