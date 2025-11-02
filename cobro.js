@@ -2,6 +2,13 @@
   const form = document.getElementById('cobro');
   const messages = document.getElementById('form-messages');
   const cancelBtn = document.getElementById('cancelBtn');
+  const submitBtn = document.getElementById('submitCobro');
+
+  // Deshabilitar botón por defecto
+  if(submitBtn){
+    submitBtn.disabled = true;
+    submitBtn.classList.add('opacity-60', 'cursor-not-allowed');
+  }
 
   function showMessage(text, type='success'){
     messages.className = type === 'success' ? 'msg-success' : 'msg-error';
@@ -21,6 +28,26 @@
 
   if(dni){
     console.log('Registrar cobro para DNI:', dni);
+  }
+
+  // Validar campos y habilitar/deshabilitar botón
+  function validateForm(){
+    const nombre = document.getElementById('nombre').value.trim();
+    const numeroTarjeta = document.getElementById('numeroTarjeta').value.trim();
+    const cvc = document.getElementById('cvc').value.trim();
+    const fecha = document.getElementById('fecha').value;
+
+    const isValid = nombre && numeroTarjeta && cvc && fecha;
+
+    if(submitBtn){
+      if(isValid){
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+      } else {
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-60', 'cursor-not-allowed');
+      }
+    }
   }
 
   function parseCurrencyToNumber(str){
@@ -56,6 +83,20 @@
 
   // Calcular al cargar la página
   computeAmounts();
+
+  // Añadir listeners a los campos requeridos para validar en tiempo real
+  const nombreInput = document.getElementById('nombre');
+  const numeroTarjetaInput = document.getElementById('numeroTarjeta');
+  const cvcInput = document.getElementById('cvc');
+  const fechaInput = document.getElementById('fecha');
+
+  if(nombreInput) nombreInput.addEventListener('input', validateForm);
+  if(numeroTarjetaInput) numeroTarjetaInput.addEventListener('input', validateForm);
+  if(cvcInput) cvcInput.addEventListener('input', validateForm);
+  if(fechaInput) fechaInput.addEventListener('change', validateForm);
+
+  // Validar al cargar por si hay datos pre-cargados
+  validateForm();
 
   // Cancelar vuelve atrás
   cancelBtn.addEventListener('click', function(){
