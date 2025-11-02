@@ -3,25 +3,70 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Demo - Prototipo Interactivo</title>
-  <meta http-equiv="refresh" content="5;url=registrar-inscripcion-ejecutable.html">
-  <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial; background:#f3f4f6; color:#111827; display:flex; align-items:center; justify-content:center; height:100vh; margin:0 }
-    .card{ background:white; padding:1.5rem; border-radius:12px; box-shadow:0 6px 20px rgba(17,24,39,0.06); max-width:520px; width:100% }
-    a.button{ display:inline-block; margin-top:.75rem; padding:.5rem .75rem; background:#2563eb; color:white; text-decoration:none; border-radius:8px }
-    a.button.secondary{ background:#6b7280 }
-    p small{ color:#6b7280 }
-  </style>
+  <title>Maratón - Prototipo Interactivo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="Prototipo interactivo para gestionar inscripciones, cobros y acreditaciones de una maratón (datos simulados).">
 </head>
 <body>
-  <div class="card">
-    <h1 style="margin:0 0 .5rem 0">Prototipo Interactivo</h1>
-  <p>Redirigiendo en 5s a la demo principal. Si no se redirige, hacé click en uno de los enlaces:</p>
-    <p>
-      <a class="button" href="registrar-inscripcion-ejecutable.html">Abrir: Registrar Inscripción</a>
-      <a class="button secondary" href="registrar-cobro-ejecutable.html" style="margin-left:.5rem">Abrir: Registrar Cobro</a>
-    </p>
-    <hr style="margin:.75rem 0">
+    <!-- Navbar -->
+  <nav class="w-full bg-white shadow-sm mb-6">
+    <div class="w-full max-w-2xl mx-auto p-4 flex items-center gap-4">
+      <a href="index.html" class="font-bold text-gray-800">Prototipo</a>
+      <a href="inscripcion.html" class="text-sm text-gray-600">Inscripción</a>
+      <a href="cobro.html" class="text-sm text-gray-600">Cobro</a>
+      <a href="acreditacion.html" class="text-sm text-gray-600">Acreditación</a>
+    </div>
+  </nav>
+
+  <div class="max-w-4xl mx-auto px-4">
+    <header class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white font-bold">M</div>
+        <div>
+          <strong class="text-lg">Maratón Ciudad</strong>
+          <div class="text-sm text-gray-500">Prototipo de gestión</div>
+        </div>
+      </div>
+      <nav class="flex items-center gap-4">
+        <a href="#" class="text-sm text-gray-600 hover:text-gray-800">Información</a>
+        <a href="inscripcion.html" class="text-sm text-gray-600 hover:text-gray-800">Inscribirse</a>
+      </nav>
+    </header>
+
+    <section class="mt-6 flex flex-col md:flex-row items-center gap-6 bg-white p-6 rounded-lg shadow-sm">
+      <div class="md:w-1/2">
+        <h1 class="text-2xl font-semibold">A paso firme: Maratón Ciudad 2025</h1>
+  <p class="text-gray-600 mt-2">Nuestro objetivo es realizar una maratón para que los participantes puedan demostrar sus aptitudes deportivas mediante el pago de una inscripción, promoviendo el compromiso social y ambiental, permitiendo que los maratonistas representen causas vinculadas a organizaciones sociales y contribuyan al cumplimiento de los Objetivos de Desarrollo Sostenible (ODS) de la ciudad.</p>
+      </div>
+      <!-- Hero SVG ilustrativo -->
+      <div class="md:w-1/2 w-full">
+        <img src="https://www.shutterstock.com/image-vector/running-poster-design-runners-legs-600nw-2272035405.jpg" alt="Ilustración maratón" class="w-full h-48 md:h-56 rounded-lg object-cover" /> 
+      </div>
+    </section>
+
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6" aria-label="Acciones principales">
+      <article class="bg-white p-4 rounded-lg shadow-md flex flex-col gap-3">
+        <h3 class="text-lg font-medium">Inscripciones</h3>
+        <p class="text-gray-600">Formulario interactivo para registrar participantes, elegir distancia y método de pago (simulado).</p>
+        <a href="inscripcion.html" class="mt-auto inline-block px-3 py-2 bg-indigo-600 text-white rounded">Ir a Inscripción</a>
+      </article>
+
+      <article class="bg-white p-4 rounded-lg shadow-md flex flex-col gap-3">
+        <h3 class="text-lg font-medium">Cobros</h3>
+        <p class="text-gray-600">Página para registrar cobros (tarjeta/efectivo). Se integra con las inscripciones mediante DNI en LocalStorage.</p>
+        <a href="cobro.html" class="mt-auto inline-block px-3 py-2 bg-indigo-600 text-white rounded">Ir a Cobro</a>
+      </article>
+
+      <article class="bg-white p-4 rounded-lg shadow-md flex flex-col gap-3">
+        <h3 class="text-lg font-medium">Acreditación</h3>
+        <p class="text-gray-600">Simula la acreditación presencial; puedes 'escanear' un QR de ejemplo y confirmar la asistencia.</p>
+        <a href="acreditacion.html" class="mt-auto inline-block px-3 py-2 bg-indigo-600 text-white rounded">Ir a Acreditación</a>
+      </article>
+    </section>
+
+    <footer class="text-gray-600 mt-6">Este prototipo guarda datos en el navegador (LocalStorage).</footer>
   </div>
+
+  <script src="index.js"></script>
 </body>
 </html>
